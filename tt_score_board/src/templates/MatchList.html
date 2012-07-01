@@ -1,0 +1,93 @@
+
+
+<html>
+
+<head>
+		<style type="text/css">
+			div.o{
+				width:80%;
+				
+				height:25%;
+			     }
+			div.ex
+			    {
+				width:14%;
+				
+				border:5px solid gray;
+				text-align:center;
+				float:left;
+				height:52%;
+		            }
+			div.n{
+					background-color:#d0e4fe;
+                                        cursor:pointer;
+			}
+			div.nB{
+					background-color:#d0e4aa;
+					cursor:pointer;
+			}
+
+			div.n:hover,div.nB:hover{
+					
+			}
+			div.n.onClickWait,div.nB.onClickWait{
+					
+			}
+
+		</style>
+
+
+
+<script type="text/javascript" src="jquery.js" >< /script>
+<script type="text/javascript">
+
+
+$(document).ready(function()
+{
+$("div.n").live("click", function()
+	{
+	var tr=$(this).attr("id");
+	$.ajax({
+  		type: "POST",
+  		url: "empty",
+  		data: { name: "id", location: "updateString" }
+		})
+	}
+	);
+}
+);
+
+
+
+
+
+</script>
+
+</head>
+
+<body>
+
+		<div class="o">	
+		<div class="ex n nB" id="A"  >	Team A 	</div>
+ 
+			<div class="ex"  >
+			
+				<div class="n" id="A1"  style=" 	float: left;      height: 50%;      width: 100%;	" >	 A1	</div>
+			
+				<div class="n" id="A2"  style="    	float: left;      height: 50%;      width: 100%;	">	A2	</div>
+			</div>
+		
+		<div class="ex">
+			
+			<div class="n" id="B1"  style="    float: left;    height: 50%;    width: 100%;">	B1	</div>
+			
+			<div class="n" id="B2"  style="    float: left;      height: 50%;      width: 100%;">B2	</div>
+		</div>
+		<div  class="ex n nB" id="B" >	Team B	</div>
+		</div>
+
+
+
+
+</body>
+</html>

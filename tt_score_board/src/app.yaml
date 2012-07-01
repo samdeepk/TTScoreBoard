@@ -1,0 +1,27 @@
+application: tt-scoreboard
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+
+- url: /static
+  static_dir: static
+
+
+- url: /updateScore/.*
+  script: guestbook.app
+  login: admin
+  
+- url: .*
+  script: guestbook.app
+includes:
+
+- users/app.yaml
+
+libraries:
+- name: webapp2
+  version: "2.5.1"
+- name: django
+  version: "1.3"

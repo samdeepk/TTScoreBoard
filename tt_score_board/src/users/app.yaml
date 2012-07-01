@@ -1,0 +1,14 @@
+
+
+handlers:
+
+
+- url: /users/pic/serve/.*
+  script: users.userPicHandler.app
+
+- url: /users/pic/.*
+  script: users.userPicHandler.app
+
+
+- url: /users.*|/login|/logout
+  script: users.userManager.app
