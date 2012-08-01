@@ -26,12 +26,12 @@ from google.appengine.api import users, memcache
 from baseServer import baseHandler, config
 from users.userManager import userHandler, getUserInfo
 
-
+import copy
 class Greeting(db.Model):
 	author = db.UserProperty()
 	content = db.StringProperty(multiline=True)
 	date = db.DateTimeProperty(auto_now_add=True)
-finalData = {"teams":[{"Team_A_score":0,'playersPerformances':{'A1_score':0,"A2_score":0},'players':['A1',"A2"],"currentServing":True},{"Team_B_score":0,'playersPerformances':{'B1_score':0,"B2_score":0},'players':['B1',"B2"],"currentServing":False}]}
+finalData = {"teams":[{"win":False,"advantage":False,"Team_A_score":0,'playersPerformances':{'A1_score':0,"A2_score":0},'players':['A1',"A2"],"currentServing":True},{"Team_B_score":0,'playersPerformances':{'B1_score':0,"B2_score":0},'players':['B1',"B2"],"currentServing":False,"advantage":False,"win":False}]}
 
 class show(baseHandler):
 	@getUserInfo
@@ -54,7 +54,7 @@ class update(baseHandler):
 			toUpdate = cli.get("game-"+gameName)
 		   
 			if not  toUpdate:
-				toUpdate = finalData
+				toUpdate = copy.copy(finalData)
 			updatedData = toUpdate
 			#self.response.out.write( "<br/><br/>Before -->")
 			#self.response.out.write( updatedData)
@@ -81,9 +81,7 @@ class update(baseHandler):
 			
 		
 	def updateFinalData(self,toUpdate={},updateString=""):
-		self.response.out.write( "<br/><br/>input-->")
-		self.response.out.write( updateString)
-		self.response.out.write( "<br/>")
+		
 		self.finalData = toUpdate
 		self.Team_A_score = 0
 		self.Team_B_score = 0
@@ -128,24 +126,56 @@ class update(baseHandler):
 			self.a = b
 			self.b = self.c
 			return self.a,self.b
-	   
-		#self.finalData['teams'][0]['currentServing'] = self.current_Service_Status_Team_A
-		self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
-		self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
-		self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
-		#self.finalData['teams'][1]['currentServing'] = self.current_Service_Status_Team_B
-		self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
-		self.finalData['teams'][1]['playersPerformances']['B1_score'] = self.B1_score
-		self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
-		#print  (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])/5
-		if (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])%5 == 0:
-			#print 'inside Swap'
-			if self.finalData['teams'][0]['currentServing']:
-				self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
-			if self.finalData['teams'][1]['currentServing']:
-				self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
-			self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
-		#print self.finalData
+		if (self.finalData['teams'][0]['Team_A_score']== 20 and self.finalData['teams'][1]['Team_B_score']== 20):
+                        self.list = self.str.split()
+                        self.leng = len(self.list)
+                        for i in range(self.leng):
+                                self.value = self.list.pop()
+                                if (self.value == 'a+' or self.value == 'A+'):
+                                        if self.finalData['teams'][0]["advantage"] == True:
+                                                self.finalData['teams'][0]["win"] == True
+                                                self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
+                                             #pass use win condition   
+                                        self.finalData['teams'][0]["advantage"]=True
+                                        self.finalData['teams'][1]["advantage"]=False
+                                elif (self.value == 'b+' or self.value == 'B+' ):
+                                        if self.finalData['teams'][1]["advantage"]==True:
+                                                self.finalData['teams'][1]["win"]=True
+                                                self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
+                                        self.finalData['teams'][1]["advantage"]=True
+                                        self.finalData['teams'][0]["advantage"]=False
+
+                                        
+                        self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
+                        self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
+                        self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
+                        self.finalData['teams'][1]['playersPerformances']['B1_score'] += self.B1_score
+                        
+                        if self.finalData['teams'][0]['currentServing']:
+                                        self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
+                        if self.finalData['teams'][1]['currentServing']:
+                                        self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
+                        self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
+                                
+                elif (self.finalData['teams'][0]['Team_A_score']< 21 and self.finalData['teams'][1]['Team_B_score']< 21):
+                        #self.finalData['teams'][0]['currentServing'] = self.current_Service_Status_Team_A
+                        self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
+                        self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
+                        self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
+                        #self.finalData['teams'][1]['currentServing'] = self.current_Service_Status_Team_B
+                        self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
+                        self.finalData['teams'][1]['playersPerformances']['B1_score'] += self.B1_score
+                        self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
+                        #print  (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])/5
+                        if (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])%5 == 0:
+                                #print 'inside Swap'
+                                if self.finalData['teams'][0]['currentServing']:
+                                        self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
+                                if self.finalData['teams'][1]['currentServing']:
+                                        self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
+                                self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
+                                        #print self.finalData
+                		
 
 app = webapp2.WSGIApplication([
 	('/updateScore/(.*)', update),
