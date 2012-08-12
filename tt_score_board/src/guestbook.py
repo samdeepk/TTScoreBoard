@@ -41,7 +41,7 @@ class show(baseHandler):
 			toUpdate = cli.get("game-"+gameName)
 			if   toUpdate:
 				updatedData = toUpdate
-                        	self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="userUpdate.html")
+				self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="Scorefeeder.html")
 			else: self.response.out.write('Invalid Game Id or Game not found')
 
 class update(baseHandler):
@@ -55,10 +55,10 @@ class update(baseHandler):
 			toUpdate = cli.get("game-"+gameName)
 		   
 			if not  toUpdate:
-                                
+								
 				toUpdate = copy.copy(finalData)
 			updatedData = toUpdate
-             
+			 
 			#self.response.out.write( "<br/><br/>Before -->")
 			#self.response.out.write( updatedData)
 			updateString = self.request.get('updateString').strip() if  self.request.get('updateString') else ""
@@ -72,24 +72,24 @@ class update(baseHandler):
 	def get(self,gameName=""):
 		#self.session = None
 		#return
-                
+				
 		if gameName:
-                       	cli = memcache.Client()
+			cli = memcache.Client()
 			toUpdate = cli.get("game-"+gameName)
 		   
 			if not  toUpdate:
-                                toUpdate = finalData
-                                toUpdate['teams'][0]['playerInfo']['A1']['names']=self.request.get('a1') 
-                                toUpdate['teams'][0]['playerInfo']['A2']['names']=self.request.get('a2') 
-                                toUpdate['teams'][1]['playerInfo']['B1']['names']=self.request.get('b1') 
-                                toUpdate['teams'][1]['playerInfo']['B2']['names']=self.request.get('b2')
-                                toUpdate['teams'][0]['playerInfo']['A1']['img']=self.request.get('a1i')
-                                toUpdate['teams'][0]['playerInfo']['A2']['img']=self.request.get('a2i')
-                                toUpdate['teams'][1]['playerInfo']['B1']['img']=self.request.get('b1i') 
-                                toUpdate['teams'][1]['playerInfo']['B2']['img']=self.request.get('b2i')
-                                cli.set("game-"+gameName,toUpdate)
+								toUpdate = finalData
+								toUpdate['teams'][0]['playerInfo']['A1']['names']=self.request.get('a1') 
+								toUpdate['teams'][0]['playerInfo']['A2']['names']=self.request.get('a2') 
+								toUpdate['teams'][1]['playerInfo']['B1']['names']=self.request.get('b1') 
+								toUpdate['teams'][1]['playerInfo']['B2']['names']=self.request.get('b2')
+								toUpdate['teams'][0]['playerInfo']['A1']['img']=self.request.get('a1i')
+								toUpdate['teams'][0]['playerInfo']['A2']['img']=self.request.get('a2i')
+								toUpdate['teams'][1]['playerInfo']['B1']['img']=self.request.get('b1i') 
+								toUpdate['teams'][1]['playerInfo']['B2']['img']=self.request.get('b2i')
+								cli.set("game-"+gameName,toUpdate)
 			updatedData = toUpdate
-			self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="Scorefeeder.html")
+			self.templateRender(template_values={'Feeder':True,"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="Scorefeeder.html")
 			
 			
 		
@@ -140,55 +140,55 @@ class update(baseHandler):
 			self.b = self.c
 			return self.a,self.b
 		if (self.finalData['teams'][0]['Team_A_score']== 20 and self.finalData['teams'][1]['Team_B_score']== 20):
-                        self.list = self.str.split()
-                        self.leng = len(self.list)
-                        for i in range(self.leng):
-                                self.value = self.list.pop()
-                                if (self.value == 'a+' or self.value == 'A+'):
-                                        if self.finalData['teams'][0]["advantage"] == True:
-                                                self.finalData['teams'][0]["win"] == True
-                                                self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
-                                             #pass use win condition   
-                                        self.finalData['teams'][0]["advantage"]=True
-                                        self.finalData['teams'][1]["advantage"]=False
-                                elif (self.value == 'b+' or self.value == 'B+' ):
-                                        if self.finalData['teams'][1]["advantage"]==True:
-                                                self.finalData['teams'][1]["win"]=True
-                                                self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
-                                        self.finalData['teams'][1]["advantage"]=True
-                                        self.finalData['teams'][0]["advantage"]=False
+						self.list = self.str.split()
+						self.leng = len(self.list)
+						for i in range(self.leng):
+								self.value = self.list.pop()
+								if (self.value == 'a+' or self.value == 'A+'):
+										if self.finalData['teams'][0]["advantage"] == True:
+												self.finalData['teams'][0]["win"] == True
+												self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
+											 #pass use win condition   
+										self.finalData['teams'][0]["advantage"]=True
+										self.finalData['teams'][1]["advantage"]=False
+								elif (self.value == 'b+' or self.value == 'B+' ):
+										if self.finalData['teams'][1]["advantage"]==True:
+												self.finalData['teams'][1]["win"]=True
+												self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
+										self.finalData['teams'][1]["advantage"]=True
+										self.finalData['teams'][0]["advantage"]=False
 
-                                        
-                        self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
-                        self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
-                        self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
-                        self.finalData['teams'][1]['playersPerformances']['B1_score'] += self.B1_score
-                        
-                        if self.finalData['teams'][0]['currentServing']:
-                                        self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
-                        if self.finalData['teams'][1]['currentServing']:
-                                        self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
-                        self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
-                                
-                elif (self.finalData['teams'][0]['Team_A_score']< 21 and self.finalData['teams'][1]['Team_B_score']< 21):
-                        #self.finalData['teams'][0]['currentServing'] = self.current_Service_Status_Team_A
-                        self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
-                        self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
-                        self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
-                        #self.finalData['teams'][1]['currentServing'] = self.current_Service_Status_Team_B
-                        self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
-                        self.finalData['teams'][1]['playersPerformances']['B1_score'] += self.B1_score
-                        self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
-                        #print  (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])/5
-                        if (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])%5 == 0:
-                                #print 'inside Swap'
-                                if self.finalData['teams'][0]['currentServing']:
-                                        self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
-                                if self.finalData['teams'][1]['currentServing']:
-                                        self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
-                                self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
-                                        #print self.finalData
-                		
+										
+						self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
+						self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
+						self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
+						self.finalData['teams'][1]['playersPerformances']['B1_score'] += self.B1_score
+						
+						if self.finalData['teams'][0]['currentServing']:
+										self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
+						if self.finalData['teams'][1]['currentServing']:
+										self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
+						self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
+								
+		elif (self.finalData['teams'][0]['Team_A_score']< 21 and self.finalData['teams'][1]['Team_B_score']< 21):
+						#self.finalData['teams'][0]['currentServing'] = self.current_Service_Status_Team_A
+						self.finalData['teams'][0]['playersPerformances']['A2_score'] += self.A2_score
+						self.finalData['teams'][0]['playersPerformances']['A1_score'] += self.A1_score
+						self.finalData['teams'][0]['Team_A_score'] += self.Team_A_score
+						#self.finalData['teams'][1]['currentServing'] = self.current_Service_Status_Team_B
+						self.finalData['teams'][1]['playersPerformances']['B2_score'] += self.B2_score
+						self.finalData['teams'][1]['playersPerformances']['B1_score'] += self.B1_score
+						self.finalData['teams'][1]['Team_B_score'] += self.Team_B_score
+						#print  (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])/5
+						if (self.finalData['teams'][0]['Team_A_score'] + self.finalData['teams'][1]['Team_B_score'])%5 == 0:
+								#print 'inside Swap'
+								if self.finalData['teams'][0]['currentServing']:
+										self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1] = swap(self.finalData['teams'][0]['players'][0],self.finalData['teams'][0]['players'][1])
+								if self.finalData['teams'][1]['currentServing']:
+										self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1] = swap(self.finalData['teams'][1]['players'][0],self.finalData['teams'][1]['players'][1])
+								self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'] = swap(self.finalData['teams'][0]['currentServing'],self.finalData['teams'][1]['currentServing'])
+										#print self.finalData
+						
 
 app = webapp2.WSGIApplication([
 	('/updateScore/(.*)', update),
