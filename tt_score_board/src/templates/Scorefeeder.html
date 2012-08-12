@@ -4,7 +4,12 @@
 
 <head>
 
+
+<link href="/static/css/style.css" rel="stylesheet" rev="stylesheet" />
+
 <script type="text/javascript" src="/static/js/jquery.js"></script>
+<script type="text/javascript" src="/static/js/scripts.js"></script>
+
 <script type="text/javascript">
 {%if Feeder%}
 scoreFeeder.__init__()
@@ -24,15 +29,15 @@ renderScore.updateOnInTerval()
 			
 				
 			
-				<div class="n" id="A2"  style="    	     height: 50%;      width: 100%; "  > <img  src="{{scores.teamA.playerInfo.A2.img}}" width ="40%" />	<br/><span >{{scores.teamA.playerInfo.A2.names}}	</span>	 <br/><span class='score'>{{scores.teamA.playersPerformances.A2_score}}	</span>	<br/></div>
-				<div class="n" id="A1"  style=" 	     height: 50%;      width: 100%; " >	<img  src="{{scores.teamA.playerInfo.A1.img}}" width ="40%" />	<br/><span > {{scores.teamA.playerInfo.A1.names}}	</span><br/><span class='score'>{{scores.teamA.playersPerformances.A1_score}}	</span></div>
+				<div class="n" id="A2"  style="    	     height: 50%;      width: 100%; "  >{%if scores.teamA.playerInfo.A2.img%} <img  src="{{scores.teamA.playerInfo.A2.img}}" width ="40%" /> {%endif%}	<br/><span >{{scores.teamA.playerInfo.A2.names|default:'A2'}}	</span>	 <br/><span class='score'>{{scores.teamA.playersPerformances.A2_score}}	</span>	<br/></div>
+				<div class="n" id="A1"  style=" 	     height: 50%;      width: 100%; " >	{%if scores.teamA.playerInfo.A1.img%} <img  src="{{scores.teamA.playerInfo.A1.img}}" width ="40%" /> {%endif%}	<br/><span > {{scores.teamA.playerInfo.A1.names|default:'A1'}}	</span><br/><span class='score'>{{scores.teamA.playersPerformances.A1_score}}	</span></div>
 			</div>
 		
 		<div class="ex players"  >
 			
-			<div class="n" id="B2"  style="        height: 50%;    width: 100%; "><img  src="{{scores.teamB.playerInfo.B2.img}}" width ="40%" />	<br/><span >	{{scores.teamB.playerInfo.B2.names}}	</span><br/><span class='score'>{{scores.teamB.playersPerformances.B2_score}}</span></div>
+			<div class="n" id="B2"  style="        height: 50%;    width: 100%; ">{%if scores.teamA.playerInfo.B2.img%}<img  src="{{scores.teamB.playerInfo.B2.img}}" width ="40%" />{%endif%}	<br/><span >	{{scores.teamB.playerInfo.B2.names|default:'B2'}}	</span><br/><span class='score'>{{scores.teamB.playersPerformances.B2_score}}</span></div>
 			
-			<div class="n" id="B1"  style="       height: 50%;      width: 100%;"><img  src="{{scores.teamB.playerInfo.B1.img}}" width ="40%" />	<br/><span >	{{scores.teamB.playerInfo.B1.names}}	</span> <br/><span class='score'>{{scores.teamB.playersPerformances.B1_score}}	</span></div>
+			<div class="n" id="B1"  style="       height: 50%;      width: 100%;">{%if scores.teamA.playerInfo.B1.img%}<img  src="{{scores.teamB.playerInfo.B1.img}}" width ="40%" />{%endif%}	<br/><span >	{{scores.teamB.playerInfo.B1.names|default:'B1'}}	</span> <br/><span class='score'>{{scores.teamB.playersPerformances.B1_score}}	</span></div>
 		</div>
 		<div  class="ex n nB" id="B" >	Team B	<br/><span class='score'>{{scores.teamB.Team_B_score}}	</span>		<br/> <span class='serve'>	</span>		<br/>  <span class ='rslt'>	</span>	<br/><span class="adv"> </span> 	<br/><span class="win"> </span></div>
 		</div>

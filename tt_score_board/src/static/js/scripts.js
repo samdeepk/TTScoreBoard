@@ -37,7 +37,8 @@ scoreFeeder={
 
 renderScore={
 		updateOnInTerval:function(){
-			var int=self.setInterval(function(){getScore()},5000);
+			renderScore.getScore()
+			var int=self.setInterval(function(){renderScore.getScore()},5000);
 
 			
 		},

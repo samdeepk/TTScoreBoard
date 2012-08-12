@@ -41,7 +41,8 @@ class show(baseHandler):
 			toUpdate = cli.get("game-"+gameName)
 			if   toUpdate:
 				updatedData = toUpdate
-				self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="Scorefeeder.html")
+				if "X-Requested-With" in self.request.headers and self.request.headers["X-Requested-With"]=="XMLHttpRequest" :self.response.out.write( json.dumps(updatedData))
+				else:self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="Scorefeeder.html")
 			else: self.response.out.write('Invalid Game Id or Game not found')
 
 class update(baseHandler):
@@ -55,7 +56,7 @@ class update(baseHandler):
 			toUpdate = cli.get("game-"+gameName)
 		   
 			if not  toUpdate:
-								
+				return				
 				toUpdate = copy.copy(finalData)
 			updatedData = toUpdate
 			 
