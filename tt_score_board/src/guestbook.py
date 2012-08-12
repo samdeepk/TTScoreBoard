@@ -31,16 +31,17 @@ class Greeting(db.Model):
 	author = db.UserProperty()
 	content = db.StringProperty(multiline=True)
 	date = db.DateTimeProperty(auto_now_add=True)
-finalData = {"teams":[{"win":False,"advantage":False,"Team_A_score":0,'playersPerformances':{'A1_score':0,"A2_score":0},'players':['A1',"A2"],"currentServing":True},{"Team_B_score":0,'playersPerformances':{'B1_score':0,"B2_score":0},'players':['B1',"B2"],"currentServing":False,"advantage":False,"win":False}]}
+finalData = {"teams":[{'playerInfo':{'A1':{'names':" ",'img':" "},'A2':{'names':" ",'img':" "}},"win":False,"advantage":False,"Team_A_score":0,'playersPerformances':{'A1_score':0,"A2_score":0},'players':['A1',"A2"],"currentServing":True},{"Team_B_score":0,'playersPerformances':{'B1_score':0,"B2_score":0},'players':['B1',"B2"],"currentServing":False,"advantage":False,"win":False,'playerInfo':{'B1':{'names':" ",'img':" "},'B2':{'names':" ",'img':" "}}}]}
 
 class show(baseHandler):
-	@getUserInfo
+	
 	def get(self,gameName=""):
 		if gameName:
 			cli = memcache.Client()
 			toUpdate = cli.get("game-"+gameName)
 			if   toUpdate:
-				self.response.out.write( toUpdate)
+				updatedData = toUpdate
+                        	self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="userUpdate.html")
 			else: self.response.out.write('Invalid Game Id or Game not found')
 
 class update(baseHandler):
@@ -54,8 +55,10 @@ class update(baseHandler):
 			toUpdate = cli.get("game-"+gameName)
 		   
 			if not  toUpdate:
+                                
 				toUpdate = copy.copy(finalData)
 			updatedData = toUpdate
+             
 			#self.response.out.write( "<br/><br/>Before -->")
 			#self.response.out.write( updatedData)
 			updateString = self.request.get('updateString').strip() if  self.request.get('updateString') else ""
@@ -69,12 +72,22 @@ class update(baseHandler):
 	def get(self,gameName=""):
 		#self.session = None
 		#return
+                
 		if gameName:
-			cli = memcache.Client()
+                       	cli = memcache.Client()
 			toUpdate = cli.get("game-"+gameName)
 		   
 			if not  toUpdate:
-				toUpdate = finalData
+                                toUpdate = finalData
+                                toUpdate['teams'][0]['playerInfo']['A1']['names']=self.request.get('a1') 
+                                toUpdate['teams'][0]['playerInfo']['A2']['names']=self.request.get('a2') 
+                                toUpdate['teams'][1]['playerInfo']['B1']['names']=self.request.get('b1') 
+                                toUpdate['teams'][1]['playerInfo']['B2']['names']=self.request.get('b2')
+                                toUpdate['teams'][0]['playerInfo']['A1']['img']=self.request.get('a1i')
+                                toUpdate['teams'][0]['playerInfo']['A2']['img']=self.request.get('a2i')
+                                toUpdate['teams'][1]['playerInfo']['B1']['img']=self.request.get('b1i') 
+                                toUpdate['teams'][1]['playerInfo']['B2']['img']=self.request.get('b2i')
+                                cli.set("game-"+gameName,toUpdate)
 			updatedData = toUpdate
 			self.templateRender(template_values={"scores":{"teamA":updatedData['teams'][0],"teamB":updatedData['teams'][1]}},path=getApproot(["templates"]),template="Scorefeeder.html")
 			
